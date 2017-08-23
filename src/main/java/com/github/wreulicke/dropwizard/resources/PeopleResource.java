@@ -1,4 +1,4 @@
-package com.example.helloworld.resources;
+package com.github.wreulicke.dropwizard.resources;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.example.helloworld.core.Person;
-import com.example.helloworld.db.PersonDAO;
+import com.github.wreulicke.dropwizard.core.Person;
+import com.github.wreulicke.dropwizard.db.PersonDAO;
 
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.RequiredArgsConstructor;

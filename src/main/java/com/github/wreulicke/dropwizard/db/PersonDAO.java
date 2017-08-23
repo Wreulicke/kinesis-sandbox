@@ -1,10 +1,10 @@
-package com.example.helloworld.db;
+package com.github.wreulicke.dropwizard.db;
 
 import java.util.List;
 
 import org.hibernate.SessionFactory;
 
-import com.example.helloworld.core.Person;
+import com.github.wreulicke.dropwizard.core.Person;
 import com.google.common.base.Optional;
 
 import io.dropwizard.hibernate.AbstractDAO;

@@ -1,4 +1,4 @@
-package com.example.helloworld.core;
+package com.github.wreulicke.dropwizard.core;
 
 import static java.lang.String.format;
 

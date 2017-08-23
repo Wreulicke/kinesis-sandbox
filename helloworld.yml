@@ -57,7 +57,7 @@ logging:
   loggers:
 
     # Sets the level for 'com.example.app' to DEBUG.
-    com.example.app: DEBUG
+    com.github.wreulicke.dropwizard: DEBUG
 
     org.hibernate.SQL: ALL
 

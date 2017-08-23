@@ -1,12 +1,12 @@
-package com.example.helloworld;
+package com.github.wreulicke.dropwizard;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.example.helloworld.core.Template;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.wreulicke.dropwizard.core.Template;
 
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;

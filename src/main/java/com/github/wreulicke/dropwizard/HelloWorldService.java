@@ -1,17 +1,17 @@
-package com.example.helloworld;
+package com.github.wreulicke.dropwizard;
 
-import com.example.helloworld.auth.ExampleAuthenticator;
-import com.example.helloworld.auth.ExampleAuthorizer;
-import com.example.helloworld.cli.RenderCommand;
-import com.example.helloworld.core.Person;
-import com.example.helloworld.core.Template;
-import com.example.helloworld.core.User;
-import com.example.helloworld.db.PersonDAO;
-import com.example.helloworld.health.TemplateHealthCheck;
-import com.example.helloworld.resources.HelloWorldResource;
-import com.example.helloworld.resources.PeopleResource;
-import com.example.helloworld.resources.PersonResource;
-import com.example.helloworld.resources.ProtectedResource;
+import com.github.wreulicke.dropwizard.auth.ExampleAuthenticator;
+import com.github.wreulicke.dropwizard.auth.ExampleAuthorizer;
+import com.github.wreulicke.dropwizard.cli.RenderCommand;
+import com.github.wreulicke.dropwizard.core.Person;
+import com.github.wreulicke.dropwizard.core.Template;
+import com.github.wreulicke.dropwizard.core.User;
+import com.github.wreulicke.dropwizard.db.PersonDAO;
+import com.github.wreulicke.dropwizard.health.TemplateHealthCheck;
+import com.github.wreulicke.dropwizard.resources.HelloWorldResource;
+import com.github.wreulicke.dropwizard.resources.PeopleResource;
+import com.github.wreulicke.dropwizard.resources.PersonResource;
+import com.github.wreulicke.dropwizard.resources.ProtectedResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;

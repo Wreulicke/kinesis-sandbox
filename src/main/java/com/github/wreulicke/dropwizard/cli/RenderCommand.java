@@ -1,10 +1,10 @@
-package com.example.helloworld.cli;
+package com.github.wreulicke.dropwizard.cli;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.helloworld.HelloWorldConfiguration;
-import com.example.helloworld.core.Template;
+import com.github.wreulicke.dropwizard.HelloWorldConfiguration;
+import com.github.wreulicke.dropwizard.core.Template;
 import com.google.common.base.Optional;
 
 import io.dropwizard.cli.ConfiguredCommand;

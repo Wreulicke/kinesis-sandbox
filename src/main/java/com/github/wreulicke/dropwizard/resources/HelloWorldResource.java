@@ -1,4 +1,4 @@
-package com.example.helloworld.resources;
+package com.github.wreulicke.dropwizard.resources;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.annotation.Timed;
-import com.example.helloworld.core.Saying;
-import com.example.helloworld.core.Template;
+import com.github.wreulicke.dropwizard.core.Saying;
+import com.github.wreulicke.dropwizard.core.Template;
 import com.google.common.base.Optional;
 
 import io.dropwizard.jersey.caching.CacheControl;

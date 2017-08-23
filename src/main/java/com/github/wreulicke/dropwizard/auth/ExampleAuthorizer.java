@@ -1,6 +1,6 @@
-package com.example.helloworld.auth;
+package com.github.wreulicke.dropwizard.auth;
 
-import com.example.helloworld.core.User;
+import com.github.wreulicke.dropwizard.core.User;
 
 import io.dropwizard.auth.Authorizer;
 

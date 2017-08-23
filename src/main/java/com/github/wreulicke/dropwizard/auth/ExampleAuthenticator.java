@@ -1,8 +1,8 @@
-package com.example.helloworld.auth;
+package com.github.wreulicke.dropwizard.auth;
 
 import java.util.Optional;
 
-import com.example.helloworld.core.User;
+import com.github.wreulicke.dropwizard.core.User;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;

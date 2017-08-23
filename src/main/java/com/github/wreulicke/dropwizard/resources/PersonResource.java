@@ -1,4 +1,4 @@
-package com.example.helloworld.resources;
+package com.github.wreulicke.dropwizard.resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -7,8 +7,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.example.helloworld.core.Person;
-import com.example.helloworld.db.PersonDAO;
+import com.github.wreulicke.dropwizard.core.Person;
+import com.github.wreulicke.dropwizard.db.PersonDAO;
 import com.google.common.base.Optional;
 
 import io.dropwizard.hibernate.UnitOfWork;
