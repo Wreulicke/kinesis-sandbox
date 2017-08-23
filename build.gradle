@@ -41,9 +41,16 @@ task oneJar(type: OneJar) {
     mainClass = mainClassName
 }
 
+task migrate(type: JavaExec){
+    args "db", "migrate", "./helloworld.yml"
+}
+
 // Configure the run task to start the Dropwizard service
 run {
-    args 'server', './helloworld.yml'
+    if (project.hasProperty('args')) {
+        args project.args.split('\\s+')
+    }
+    else args 'server', './helloworld.yml'
 }
 
 task wrapper(type: Wrapper) {
