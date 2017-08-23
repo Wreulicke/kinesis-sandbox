@@ -1,13 +1,13 @@
 package com.example.helloworld.core;
 
-public class User {
-    private final String name;
+import java.security.Principal;
 
-    public User(String name) {
-        this.name = name;
-    }
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    public String getName() {
-        return name;
-    }
+@RequiredArgsConstructor
+@Getter
+public class User implements Principal {
+	private final String name;
+	
 }

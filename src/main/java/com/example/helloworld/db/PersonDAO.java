@@ -1,11 +1,13 @@
 package com.example.helloworld.db;
 
-import com.example.helloworld.core.Person;
-import com.google.common.base.Optional;
-import com.yammer.dropwizard.hibernate.AbstractDAO;
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 
-import java.util.List;
+import com.example.helloworld.core.Person;
+import com.google.common.base.Optional;
+
+import io.dropwizard.hibernate.AbstractDAO;
 
 public class PersonDAO extends AbstractDAO<Person> {
     public PersonDAO(SessionFactory factory) {
