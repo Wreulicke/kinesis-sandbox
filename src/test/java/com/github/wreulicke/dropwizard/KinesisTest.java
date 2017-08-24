@@ -123,7 +123,7 @@ public class KinesisTest {
 		executorService.submit(worker);
 		processBarrier.await();
 		
-		kinesis.deleteStream("testStream").getSdkResponseMetadata();
+		kinesis.deleteStream("testStream");
 		executorService.awaitTermination(10, TimeUnit.SECONDS);
 	}
 	
