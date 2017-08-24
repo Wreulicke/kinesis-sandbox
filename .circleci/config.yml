@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
-      - image: takezoe/kinesalite
+      - image: localstack/localstack
     working_directory: ~/repo
     environment:
       JVM_OPTS: -Xmx3200m
