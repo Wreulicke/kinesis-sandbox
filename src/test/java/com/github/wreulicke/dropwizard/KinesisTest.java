@@ -29,7 +29,6 @@ import com.amazonaws.services.kinesis.metrics.impl.NullMetricsFactory;
 import com.amazonaws.services.kinesis.model.PutRecordRequest;
 import com.amazonaws.services.kinesis.model.Record;
 import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +38,6 @@ public class KinesisTest {
 	ThreadFactory factory = new ThreadFactoryBuilder().setDaemon(true).build();
 	
 	ExecutorService executorService = Executors.newFixedThreadPool(10, factory);
-	
-	ObjectMapper objectMapper = new ObjectMapper();
 	
 	
 	@Test
@@ -105,7 +102,7 @@ public class KinesisTest {
 			}
 		}
 		String key = RandomStringUtils.randomAlphanumeric(10);
-		String data = "{\"key_vvv\":\"test\"}";
+		String data = "test-data-" + key;
 		
 		Worker worker = new Worker.Builder()
 			.config(config)
