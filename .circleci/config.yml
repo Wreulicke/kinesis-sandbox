@@ -4,8 +4,8 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
+      - image: takezoe/kinesalite
     working_directory: ~/repo
-
     environment:
       JVM_OPTS: -Xmx3200m
       TERM: dumb
