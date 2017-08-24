@@ -7,6 +7,8 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -26,19 +28,24 @@ import com.amazonaws.services.kinesis.clientlibrary.lib.worker.Worker;
 import com.amazonaws.services.kinesis.metrics.impl.NullMetricsFactory;
 import com.amazonaws.services.kinesis.model.PutRecordRequest;
 import com.amazonaws.services.kinesis.model.Record;
+import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class KinesisTest {
-	ExecutorService executorService = Executors.newFixedThreadPool(5);
+	ThreadFactory factory = new ThreadFactoryBuilder().setDaemon(true).build();
+	
+	ExecutorService executorService = Executors.newFixedThreadPool(10, factory);
 	
 	ObjectMapper objectMapper = new ObjectMapper();
 	
 	
 	@Test
 	public void test() throws Exception {
+		
 		System.setProperty("com.amazonaws.sdk.disableCbor", "1");
 		CyclicBarrier barrier = new CyclicBarrier(6);
 		CyclicBarrier processBarrier = new CyclicBarrier(2);
@@ -89,14 +96,23 @@ public class KinesisTest {
 			.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4568", null))
 			.build();
 		
-		kinesis.createStream("testSteram", 5).getSdkResponseMetadata();
+		kinesis.createStream("testStream", 5);
+		while (true) {
+			try {
+				kinesis.describeStream("testStream");
+				break;
+			} catch (ResourceNotFoundException e2) {
+			}
+		}
 		String key = RandomStringUtils.randomAlphanumeric(10);
 		String data = "{\"key_vvv\":\"test\"}";
 		
 		Worker worker = new Worker.Builder()
 			.config(config)
 			.recordProcessorFactory(factory)
-			.metricsFactory(new NullMetricsFactory()).build();
+			.metricsFactory(new NullMetricsFactory())
+			.execService(executorService)
+			.build();
 		executorService.submit(worker);
 		barrier.await();
 		
@@ -110,7 +126,8 @@ public class KinesisTest {
 		executorService.submit(worker);
 		processBarrier.await();
 		
-		kinesis.deleteStream("testSteram").getSdkResponseMetadata();
+		kinesis.deleteStream("testStream").getSdkResponseMetadata();
+		executorService.awaitTermination(10, TimeUnit.SECONDS);
 	}
 	
 }
