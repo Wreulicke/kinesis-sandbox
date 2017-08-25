@@ -18,20 +18,20 @@ import lombok.RequiredArgsConstructor;
 @Produces(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
 public class PeopleResource {
-	
-	private final PersonDAO peopleDAO;
-	
-	
-	@POST
-	@UnitOfWork
-	public Person createPerson(Person person) {
-		return peopleDAO.create(person);
-	}
-	
-	@GET
-	@UnitOfWork
-	public List<Person> listPeople() {
-		return peopleDAO.findAll();
-	}
-	
+
+  private final PersonDAO peopleDAO;
+
+
+  @POST
+  @UnitOfWork
+  public Person createPerson(Person person) {
+    return peopleDAO.create(person);
+  }
+
+  @GET
+  @UnitOfWork
+  public List<Person> listPeople() {
+    return peopleDAO.findAll();
+  }
+
 }

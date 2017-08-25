@@ -8,11 +8,11 @@ import lombok.Value;
 
 @Value
 public class Saying {
-	@JsonProperty
-	private final long id;
-	
-	@JsonProperty
-	@Length(max = 3)
-	private final String content;
-	
+  @JsonProperty
+  private final long id;
+
+  @JsonProperty
+  @Length(max = 3)
+  private final String content;
+
 }

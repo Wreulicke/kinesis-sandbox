@@ -14,20 +14,20 @@ import lombok.Data;
 
 @Data
 public class HelloWorldConfiguration extends Configuration {
-	@NotEmpty
-	private String template;
-	
-	@NotEmpty
-	private String defaultName = "Stranger";
-	
-	@Valid
-	@NotNull
-	@JsonProperty("database")
-	private DataSourceFactory dataSourceFactory = new DataSourceFactory();
-	
-	
-	public Template buildTemplate() {
-		return new Template(template, defaultName);
-	}
-	
+  @NotEmpty
+  private String template;
+
+  @NotEmpty
+  private String defaultName = "Stranger";
+
+  @Valid
+  @NotNull
+  @JsonProperty("database")
+  private DataSourceFactory dataSourceFactory = new DataSourceFactory();
+
+
+  public Template buildTemplate() {
+    return new Template(template, defaultName);
+  }
+
 }

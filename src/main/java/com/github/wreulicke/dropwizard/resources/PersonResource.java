@@ -19,18 +19,18 @@ import lombok.RequiredArgsConstructor;
 @Produces(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
 public class PersonResource {
-	
-	private final PersonDAO peopleDAO;
-	
-	
-	@GET
-	@UnitOfWork
-	public Person getPerson(@PathParam("personId") LongParam personId) {
-		final Optional<Person> person = peopleDAO.findById(personId.get());
-		if (!person.isPresent()) {
-			throw new NotFoundException("No such user.");
-		}
-		return person.get();
-	}
-	
+
+  private final PersonDAO peopleDAO;
+
+
+  @GET
+  @UnitOfWork
+  public Person getPerson(@PathParam("personId") LongParam personId) {
+    final Optional<Person> person = peopleDAO.findById(personId.get());
+    if (!person.isPresent()) {
+      throw new NotFoundException("No such user.");
+    }
+    return person.get();
+  }
+
 }

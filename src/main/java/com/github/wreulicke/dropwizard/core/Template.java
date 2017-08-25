@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class Template {
-	private final String content;
-	
-	private final String defaultName;
-	
-	
-	public String render(Optional<String> name) {
-		return format(content, name.or(defaultName));
-	}
+  private final String content;
+
+  private final String defaultName;
+
+
+  public String render(Optional<String> name) {
+    return format(content, name.or(defaultName));
+  }
 }

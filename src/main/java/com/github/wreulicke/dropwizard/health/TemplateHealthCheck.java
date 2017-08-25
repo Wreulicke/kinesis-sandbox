@@ -8,13 +8,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class TemplateHealthCheck extends HealthCheck {
-	private final Template template;
-	
-	
-	@Override
-	protected Result check() throws Exception {
-		template.render(Optional.of("woo"));
-		template.render(Optional.<String> absent());
-		return Result.healthy();
-	}
+  private final Template template;
+
+
+  @Override
+  protected Result check() throws Exception {
+    template.render(Optional.of("woo"));
+    template.render(Optional.<String>absent());
+    return Result.healthy();
+  }
 }

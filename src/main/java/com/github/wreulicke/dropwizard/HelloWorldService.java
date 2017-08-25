@@ -24,57 +24,64 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class HelloWorldService extends Application<HelloWorldConfiguration> {
-	
-	private final HibernateBundle<HelloWorldConfiguration> hibernateBundle =
-			new HibernateBundle<HelloWorldConfiguration>(Person.class) {
-				@Override
-				public PooledDataSourceFactory getDataSourceFactory(HelloWorldConfiguration configuration) {
-					return configuration.getDataSourceFactory();
-				}
-			};
-	
-	
-	@Override
-	public String getName() {
-		return "hello-world";
-	}
-	
-	@Override
-	public void initialize(Bootstrap<HelloWorldConfiguration> bootstrap) {
-		bootstrap.addCommand(new RenderCommand());
-//		bootstrap.addBundle(new AssetsBundle());
-		bootstrap.addBundle(new MigrationsBundle<HelloWorldConfiguration>() {
-			@Override
-			public PooledDataSourceFactory getDataSourceFactory(HelloWorldConfiguration configuration) {
-				return configuration.getDataSourceFactory();
-			}
-		});
-		bootstrap.addBundle(hibernateBundle);
-	}
-	
-	@Override
-	public void run(HelloWorldConfiguration configuration, Environment environment) throws Exception {
-		final PersonDAO dao = new PersonDAO(hibernateBundle.getSessionFactory());
-		
-		environment.jersey().register(new AuthDynamicFeature(
-				new BasicCredentialAuthFilter.Builder<User>()
-					.setAuthenticator(new ExampleAuthenticator())
-					.setAuthorizer(new ExampleAuthorizer())
-					.setRealm("SUPER SECRET STUFF")
-					.buildAuthFilter()));
-		
-		final Template template = configuration.buildTemplate();
-		environment.healthChecks().register("template", new TemplateHealthCheck(template));
-		
-		environment.jersey().register(new HelloWorldResource(template));
-		environment.jersey().register(new ProtectedResource());
-		environment.jersey().register(new PeopleResource(dao));
-		environment.jersey().register(new PersonResource(dao));
-		environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
-	}
-	
-	public static void main(String[] args) throws Exception {
-		new HelloWorldService().run(args);
-	}
-	
+
+  private final HibernateBundle<HelloWorldConfiguration> hibernateBundle =
+    new HibernateBundle<HelloWorldConfiguration>(Person.class) {
+      @Override
+      public PooledDataSourceFactory getDataSourceFactory(HelloWorldConfiguration configuration) {
+        return configuration.getDataSourceFactory();
+      }
+    };
+
+
+  @Override
+  public String getName() {
+    return "hello-world";
+  }
+
+  @Override
+  public void initialize(Bootstrap<HelloWorldConfiguration> bootstrap) {
+    bootstrap.addCommand(new RenderCommand());
+    // bootstrap.addBundle(new AssetsBundle());
+    bootstrap.addBundle(new MigrationsBundle<HelloWorldConfiguration>() {
+      @Override
+      public PooledDataSourceFactory getDataSourceFactory(HelloWorldConfiguration configuration) {
+        return configuration.getDataSourceFactory();
+      }
+    });
+    bootstrap.addBundle(hibernateBundle);
+  }
+
+  @Override
+  public void run(HelloWorldConfiguration configuration, Environment environment) throws Exception {
+    final PersonDAO dao = new PersonDAO(hibernateBundle.getSessionFactory());
+
+    environment.jersey()
+      .register(new AuthDynamicFeature(
+        new BasicCredentialAuthFilter.Builder<User>()
+          .setAuthenticator(new ExampleAuthenticator())
+          .setAuthorizer(new ExampleAuthorizer())
+          .setRealm("SUPER SECRET STUFF")
+          .buildAuthFilter()));
+
+    final Template template = configuration.buildTemplate();
+    environment.healthChecks()
+      .register("template", new TemplateHealthCheck(template));
+
+    environment.jersey()
+      .register(new HelloWorldResource(template));
+    environment.jersey()
+      .register(new ProtectedResource());
+    environment.jersey()
+      .register(new PeopleResource(dao));
+    environment.jersey()
+      .register(new PersonResource(dao));
+    environment.jersey()
+      .register(new AuthValueFactoryProvider.Binder<>(User.class));
+  }
+
+  public static void main(String[] args) throws Exception {
+    new HelloWorldService().run(args);
+  }
+
 }

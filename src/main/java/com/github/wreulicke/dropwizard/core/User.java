@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class User implements Principal {
-	private final String name;
-	
+  private final String name;
+
 }

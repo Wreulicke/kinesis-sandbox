@@ -26,23 +26,23 @@ import lombok.RequiredArgsConstructor;
 @Produces(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
 public class HelloWorldResource {
-	private static final Logger LOGGER = LoggerFactory.getLogger(HelloWorldResource.class);
-	
-	private final Template template;
-	
-	// CAUTION!! This implementation is example.
-	private final AtomicLong counter = new AtomicLong();
-	
-	
-	@GET
-	@Timed(name = "get-requests")
-	@CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.DAYS)
-	public Saying sayHello(@QueryParam("name") Optional<String> name) {
-		return new Saying(counter.incrementAndGet(), template.render(name));
-	}
-	
-	@POST
-	public void receiveHello(@Valid Saying saying) {
-		LOGGER.info("Received a saying: {}", saying);
-	}
+  private static final Logger LOGGER = LoggerFactory.getLogger(HelloWorldResource.class);
+
+  private final Template template;
+
+  // CAUTION!! This implementation is example.
+  private final AtomicLong counter = new AtomicLong();
+
+
+  @GET
+  @Timed(name = "get-requests")
+  @CacheControl(maxAge = 1, maxAgeUnit = TimeUnit.DAYS)
+  public Saying sayHello(@QueryParam("name") Optional<String> name) {
+    return new Saying(counter.incrementAndGet(), template.render(name));
+  }
+
+  @POST
+  public void receiveHello(@Valid Saying saying) {
+    LOGGER.info("Received a saying: {}", saying);
+  }
 }
