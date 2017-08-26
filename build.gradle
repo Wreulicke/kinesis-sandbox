@@ -66,6 +66,8 @@ task oneJar(type: OneJar) {
 }
 
 task migrate(type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.github.wreulicke.dropwizard.HelloWorldService'
     args "db", "migrate", "./helloworld.yml"
 }
 
@@ -83,4 +85,12 @@ task wrapper(type: Wrapper) {
 
 artifacts {
     oneJar
+}
+
+task deps(type: Exec, dependsOn: jar){
+    commandLine "jdeps", "-cp", sourceSets.main.runtimeClasspath.asPath, "-R" ,"build/libs/kinesis-sandbox.jar"
+}
+
+task depsSummary(type: Exec, dependsOn: jar){
+    commandLine "jdeps", "-dotoutput", "build/reports/deps", "-s", "-cp", sourceSets.main.runtimeClasspath.asPath, "-R" ,"build/libs/kinesis-sandbox.jar"
 }

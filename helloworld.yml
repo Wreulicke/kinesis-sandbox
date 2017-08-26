@@ -1,7 +1,10 @@
-template: Hello, %s!
-
-defaultName: Stranger
-
+job: 
+  streamName: testStream
+  applicationName: testApplication
+  kinesisEndpoint: http://localhost:4568
+  dynamoEndpoint: http://localhost:4569
+  shardSize: 20
+  jobPoolSize: 20
 # Database settings.
 database:
   # the name of your JDBC driver
@@ -20,11 +23,11 @@ database:
 server: 
   applicationConnectors:
     - type: http
-      port: 8080
+      port: 8000
       acceptQueueSize: 100
   adminConnectors:
     - type: http
-      port: 8081
+      port: 8001
 
   # Maximum number of threads.
   maxThreads: 100
@@ -55,12 +58,12 @@ logging:
 
   # Logger-specific levels.
   loggers:
-
-    # Sets the level for 'com.example.app' to DEBUG.
-    com.github.wreulicke.dropwizard: DEBUG
-
-    org.hibernate.SQL: ALL
-
+    "com.github.wreulicke.dropwizard": INFO
+    "com.amazonaws.services": DEBUG
+    "org.eclipse.jetty": DEBUG
   # Settings for logging to stdout.
   appenders:
     - type: console
+      threshold: INFO
+      includeCallerData: true
+      logFormat: "%d{yyyy/MM/dd HH:mm:ss.SSS,JST} [%.16thread] %-5level %logger{36}:%line - %msg%n"
