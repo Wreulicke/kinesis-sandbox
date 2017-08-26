@@ -11,6 +11,8 @@ import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
@@ -42,6 +44,11 @@ public class HelloWorldService extends Application<HelloWorldConfiguration> {
         return configuration.getDataSourceFactory();
       }
     });
+
+    bootstrap.setConfigurationSourceProvider(
+      new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
+        new EnvironmentVariableSubstitutor(false)));
+
     bootstrap.addBundle(hibernateBundle);
   }
 
