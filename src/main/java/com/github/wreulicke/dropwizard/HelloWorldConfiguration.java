@@ -107,6 +107,9 @@ public class HelloWorldConfiguration extends Configuration {
         configuration = configuration.withKinesisEndpoint(kinesisEndpoint)
           .withDynamoDBEndpoint(dynamoEndpoint);
       }
+      else if (region != null) {
+        configuration = configuration.withRegionName(region);
+      }
 
       return new JobProcessorFactory(configuration, service);
     }

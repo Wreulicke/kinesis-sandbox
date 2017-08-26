@@ -10,6 +10,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -34,16 +36,29 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class KinesisTest {
+  private AmazonKinesis kinesis;
+
+  private AWSStaticCredentialsProvider dummyProvider;
+
   ThreadFactory factory = new ThreadFactoryBuilder().setDaemon(true)
     .build();
 
   ExecutorService executorService = Executors.newFixedThreadPool(10, factory);
 
 
+  @Before
+  public void setup() {
+    System.setProperty("com.amazonaws.sdk.disableCbor", "1");
+    dummyProvider = new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy"));;
+    kinesis = AmazonKinesisClientBuilder.standard()
+      .withCredentials(dummyProvider)
+      .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4568", null))
+      .build();
+
+  }
+
   @Test
   public void test() throws Exception {
-
-    System.setProperty("com.amazonaws.sdk.disableCbor", "1");
     CyclicBarrier barrier = new CyclicBarrier(6);
     CyclicBarrier processBarrier = new CyclicBarrier(2);
     IRecordProcessorFactory factory = () -> {
@@ -78,18 +93,11 @@ public class KinesisTest {
       };
     };
 
-    AWSStaticCredentialsProvider dummyProvider =
-      new AWSStaticCredentialsProvider(new BasicAWSCredentials("dummy", "dummy"));
-
     KinesisClientLibConfiguration config =
       new KinesisClientLibConfiguration("testApp", "testStream", dummyProvider, "testWorker")
         .withInitialPositionInStream(InitialPositionInStream.LATEST)
         .withKinesisEndpoint("http://localhost:4568/")
         .withDynamoDBEndpoint("http://localhost:4569/");
-    AmazonKinesis kinesis = AmazonKinesisClientBuilder.standard()
-      .withCredentials(dummyProvider)
-      .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4568", null))
-      .build();
 
     kinesis.createStream("testStream", 5);
     while (true) {
@@ -121,8 +129,13 @@ public class KinesisTest {
 
     processBarrier.await();
 
-    kinesis.deleteStream("testStream");
     executorService.awaitTermination(10, TimeUnit.SECONDS);
+  }
+
+  @After
+  public void teardown() {
+    kinesis.deleteStream("testStream");
+    System.clearProperty("com.amazonaws.sdk.disableCbor");
   }
 
 }

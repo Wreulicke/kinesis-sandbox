@@ -1,21 +1,24 @@
 apply plugin: 'java'
-apply plugin: 'gradle-one-jar'
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+applicationName = 'ExampleApplication'
 mainClassName = 'com.github.wreulicke.dropwizard.HelloWorldService'
+version = '1.0'
 
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
     }
 }
 
@@ -41,9 +44,7 @@ dependencies {
     compile 'com.amazonaws:amazon-kinesis-client:1.8.1'
     
 	
-	// compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.8.9'
-	
-    
+	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.8.9'
     testCompile 'junit:junit:4.12'
 }
 
@@ -60,11 +61,6 @@ configurations.all {
 	}
 }
 	
-// Configure the oneJar task
-task oneJar(type: OneJar) {
-    mainClass = mainClassName
-}
-
 task migrate(type: JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.github.wreulicke.dropwizard.HelloWorldService'
@@ -79,12 +75,27 @@ run {
     else args 'server', './helloworld.yml'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.1'
+jar {
+    manifest {
+        attributes(
+            'Implementation-Title': applicationName,
+            'Implementation-Version': version,
+            'Built-Time': new Date(),
+            'Main-Class': mainClassName,
+            'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        )
+    }
 }
 
-artifacts {
-    oneJar
+shadowJar {
+    mergeServiceFiles()
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
 }
 
 task deps(type: Exec, dependsOn: jar){
