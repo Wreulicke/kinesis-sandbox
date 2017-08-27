@@ -16,6 +16,7 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehose;
 import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehoseClientBuilder;
 import com.amazonaws.services.kinesisfirehose.model.CreateDeliveryStreamRequest;
+import com.amazonaws.services.kinesisfirehose.model.DeleteDeliveryStreamRequest;
 import com.amazonaws.services.kinesisfirehose.model.DescribeDeliveryStreamRequest;
 import com.amazonaws.services.kinesisfirehose.model.PutRecordRequest;
 import com.amazonaws.services.kinesisfirehose.model.Record;
@@ -85,6 +86,8 @@ public class FirehoseTest {
 
   @After
   public void tearDown() {
+    firehose.deleteDeliveryStream(new DeleteDeliveryStreamRequest().withDeliveryStreamName("testStream"));
+
     s3.listObjects("test")
       .getObjectSummaries()
       .forEach(s -> {
