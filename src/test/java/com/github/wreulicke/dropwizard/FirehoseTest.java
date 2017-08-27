@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +22,7 @@ import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehoseClientBuilder
 import com.amazonaws.services.kinesisfirehose.model.CreateDeliveryStreamRequest;
 import com.amazonaws.services.kinesisfirehose.model.DeleteDeliveryStreamRequest;
 import com.amazonaws.services.kinesisfirehose.model.DescribeDeliveryStreamRequest;
+import com.amazonaws.services.kinesisfirehose.model.PutRecordBatchRequest;
 import com.amazonaws.services.kinesisfirehose.model.PutRecordRequest;
 import com.amazonaws.services.kinesisfirehose.model.Record;
 import com.amazonaws.services.kinesisfirehose.model.ResourceNotFoundException;
@@ -47,10 +52,7 @@ public class FirehoseTest {
       .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4572", null))
       .withPathStyleAccessEnabled(true)
       .build();;
-  }
 
-  @Test
-  public void test() {
     s3.createBucket("test");
 
     firehose.createDeliveryStream(
@@ -70,6 +72,10 @@ public class FirehoseTest {
       }
     }
 
+  }
+
+  @Test
+  public void test() {
     firehose.putRecord(
       new PutRecordRequest()
         .withDeliveryStreamName("testStream")
@@ -77,12 +83,33 @@ public class FirehoseTest {
           new Record()
             .withData(ByteBuffer.wrap("test".getBytes(StandardCharsets.UTF_8)))));
 
-
     assertThat(s3.listObjects("test")
       .getObjectSummaries()).anySatisfy(summary -> {
         assertThat(summary.getKey()).startsWith("firehose/");
       });
   }
+
+  @Test
+  public void test2() {
+    List<Record> records = IntStream.range(0, 10)
+      .mapToObj(i -> new Record()
+        .withData(ByteBuffer.wrap("test".getBytes(StandardCharsets.UTF_8))))
+      .collect(Collectors.toList());;
+    PutRecordBatchRequest batchRequest = new PutRecordBatchRequest()
+      .withDeliveryStreamName("testStream")
+      .withRecords(records);
+
+    Integer count = firehose.putRecordBatch(batchRequest)
+      .getFailedPutCount();
+    assertThat(count).isEqualTo(0);
+
+
+    assertThat(s3.listObjects("test")
+      .getObjectSummaries()).areAtLeast(10, new Condition<>(s -> s.getKey()
+        .startsWith("firehose/"), "containes prefix"));
+
+  }
+
 
   @After
   public void tearDown() {
