@@ -1,4 +1,5 @@
 job: 
+  type: aws
   streamName: testStream
   applicationName: testApplication
   region: ${AWS_DEFAULT_REGION}

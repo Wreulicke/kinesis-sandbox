@@ -1,4 +1,5 @@
 job: 
+  type: local
   streamName: testStream
   applicationName: testApplication
   kinesisEndpoint: http://localhost:4568

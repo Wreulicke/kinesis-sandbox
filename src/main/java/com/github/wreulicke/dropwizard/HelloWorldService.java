@@ -68,7 +68,7 @@ public class HelloWorldService extends Application<HelloWorldConfiguration> {
       .register("template", new SimpleHealthCheck());
 
 
-    configuration.getJobConfigurer()
+    configuration.job()
       .configure(environment, dao);
 
     environment.jersey()
