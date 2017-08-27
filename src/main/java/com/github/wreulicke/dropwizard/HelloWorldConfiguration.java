@@ -26,8 +26,10 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.lifecycle.ExecutorServiceManager;
 import io.dropwizard.lifecycle.setup.ExecutorServiceBuilder;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.util.Duration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -132,6 +134,8 @@ public class HelloWorldConfiguration extends Configuration {
         .build();
       ExecutorService service = Executors.newFixedThreadPool(shardSize, factory);
 
+      environment.lifecycle()
+        .manage(new ExecutorServiceManager(service, Duration.minutes(2), "job-processor"));
       environment.lifecycle()
         .manage(buildJobProcessorFactory(service));
 

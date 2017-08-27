@@ -3,7 +3,6 @@ package com.github.wreulicke.dropwizard.job;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessor;
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessorCheckpointer;
@@ -32,11 +31,7 @@ public class JobProcessorFactory implements Managed, IRecordProcessorFactory {
   }
 
   @Override
-  public void stop() throws Exception {
-    workerService.shutdown();
-    workerService.awaitTermination(10, TimeUnit.SECONDS);
-    log.info("job processor shutdown...");
-  }
+  public void stop() throws Exception {}
 
   public Worker build() {
     return new Worker.Builder()
