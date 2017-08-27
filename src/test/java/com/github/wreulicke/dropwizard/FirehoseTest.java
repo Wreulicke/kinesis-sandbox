@@ -1,22 +1,22 @@
 package com.github.wreulicke.dropwizard;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehose;
 import com.amazonaws.services.kinesisfirehose.AmazonKinesisFirehoseClientBuilder;
-import com.amazonaws.services.kinesisfirehose.model.BufferingHints;
-import com.amazonaws.services.kinesisfirehose.model.CompressionFormat;
 import com.amazonaws.services.kinesisfirehose.model.CreateDeliveryStreamRequest;
 import com.amazonaws.services.kinesisfirehose.model.DescribeDeliveryStreamRequest;
-import com.amazonaws.services.kinesisfirehose.model.EncryptionConfiguration;
-import com.amazonaws.services.kinesisfirehose.model.NoEncryptionConfig;
 import com.amazonaws.services.kinesisfirehose.model.PutRecordRequest;
 import com.amazonaws.services.kinesisfirehose.model.Record;
 import com.amazonaws.services.kinesisfirehose.model.ResourceNotFoundException;
@@ -27,7 +27,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 public class FirehoseTest {
   private AmazonKinesisFirehose firehose;
 
-  private AWSStaticCredentialsProvider dummyProvider;
+  private AWSCredentialsProvider dummyProvider;
 
   private AmazonS3 s3;
 
@@ -43,8 +43,7 @@ public class FirehoseTest {
 
     s3 = AmazonS3ClientBuilder.standard()
       .withCredentials(dummyProvider)
-      .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4572", "us-east-1"))
-      .withChunkedEncodingDisabled(true)
+      .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:4572", null))
       .withPathStyleAccessEnabled(true)
       .build();;
   }
@@ -52,7 +51,6 @@ public class FirehoseTest {
   @Test
   public void test() {
     s3.createBucket("test");
-    s3.putObject("test", "xxxxx", "yyyy");
 
     firehose.createDeliveryStream(
       new CreateDeliveryStreamRequest()
@@ -61,13 +59,7 @@ public class FirehoseTest {
           new S3DestinationConfiguration()
             .withBucketARN("arn:aws:s3:::test")
             .withPrefix("firehose/")
-            .withRoleARN("arn:aws:iam::dummy:role/dummy")
-            .withCompressionFormat(CompressionFormat.UNCOMPRESSED)
-            .withEncryptionConfiguration(new EncryptionConfiguration()
-              .withNoEncryptionConfig(NoEncryptionConfig.NoEncryption))
-            .withBufferingHints(new BufferingHints()
-              .withSizeInMBs(5)
-              .withIntervalInSeconds(60))));
+            .withRoleARN("arn:aws:iam::dummy:role/dummy")));
 
     while (true) {
       try {
@@ -84,6 +76,15 @@ public class FirehoseTest {
           new Record()
             .withData(ByteBuffer.wrap("test".getBytes(StandardCharsets.UTF_8)))));
 
+
+    assertThat(s3.listObjects("test")
+      .getObjectSummaries()).anySatisfy(summary -> {
+        assertThat(summary.getKey()).startsWith("firehose/");
+      });
+  }
+
+  @After
+  public void tearDown() {
     s3.listObjects("test")
       .getObjectSummaries()
       .forEach(s -> {
