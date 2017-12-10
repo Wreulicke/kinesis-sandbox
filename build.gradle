@@ -12,40 +12,39 @@ mainClassName = 'com.github.wreulicke.dropwizard.HelloWorldService'
 version = '1.0'
 
 buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
+		repositories {
+				jcenter()
+				mavenCentral()
+		}
 
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
-    }
+		dependencies {
+				classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+		}
 }
 
 repositories {
-    mavenCentral()
+		mavenCentral()
 }
 
 dependencies {
-    compile (
-       "io.dropwizard:dropwizard-core:$dropwizardVersion",
-       "io.dropwizard:dropwizard-hibernate:$dropwizardVersion",
-       "io.dropwizard:dropwizard-migrations:$dropwizardVersion",
-       "io.dropwizard:dropwizard-auth:$dropwizardVersion",
-       'com.h2database:h2:1.4.196'
-    )
+	compile (
+		 "io.dropwizard:dropwizard-core:$dropwizardVersion",
+		 "io.dropwizard:dropwizard-hibernate:$dropwizardVersion",
+		 "io.dropwizard:dropwizard-migrations:$dropwizardVersion",
+		 "io.dropwizard:dropwizard-auth:$dropwizardVersion",
+		 'com.h2database:h2:1.4.196'
+	)
 	compileOnly "org.projectlombok:lombok:1.16.18"
 	testCompileOnly "org.projectlombok:lombok:1.16.18"
 
 	compile "org.slf4j:slf4j-api:1.7.24"
 	compile "org.slf4j:jul-to-slf4j:1.7.24"
 	compile "ch.qos.logback:logback-classic:1.1.7"
-    compile "com.amazonaws:aws-java-sdk-kinesis:1.11.181"
-    compile 'com.amazonaws:amazon-kinesis-client:1.8.1'
-    
-	
+	compile "com.amazonaws:aws-java-sdk-kinesis:1.11.181"
+	compile 'com.amazonaws:amazon-kinesis-client:1.8.1'
+		
 	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: '2.8.9'
-    testCompile 'junit:junit:4.12'
+	testCompile 'junit:junit:4.12'
 	testCompile group: 'org.assertj', name: 'assertj-core', version: '3.8.0'
 
 }
@@ -64,46 +63,46 @@ configurations.all {
 }
 	
 task migrate(type: JavaExec){
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'com.github.wreulicke.dropwizard.HelloWorldService'
-    args "db", "migrate", "./helloworld.yml"
+		classpath = sourceSets.main.runtimeClasspath
+		main = 'com.github.wreulicke.dropwizard.HelloWorldService'
+		args "db", "migrate", "./helloworld.yml"
 }
 
 // Configure the run task to start the Dropwizard service
 run {
-    if (project.hasProperty('args')) {
-        args project.args.split('\\s+')
-    }
-    else args 'server', './helloworld.yml'
+		if (project.hasProperty('args')) {
+				args project.args.split('\\s+')
+		}
+		else args 'server', './helloworld.yml'
 }
 
 jar {
-    manifest {
-        attributes(
-            'Implementation-Title': applicationName,
-            'Implementation-Version': version,
-            'Built-Time': new Date(),
-            'Main-Class': mainClassName,
-            'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
-        )
-    }
+		manifest {
+				attributes(
+						'Implementation-Title': applicationName,
+						'Implementation-Version': version,
+						'Built-Time': new Date(),
+						'Main-Class': mainClassName,
+						'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+				)
+		}
 }
 
 shadowJar {
-    mergeServiceFiles()
-    exclude 'META-INF/*.SF'
-    exclude 'META-INF/*.DSA'
-    exclude 'META-INF/*.RSA'
+		mergeServiceFiles()
+		exclude 'META-INF/*.SF'
+		exclude 'META-INF/*.DSA'
+		exclude 'META-INF/*.RSA'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.1'
+		gradleVersion = '4.1'
 }
 
 task deps(type: Exec, dependsOn: jar){
-    commandLine "jdeps", "-cp", sourceSets.main.runtimeClasspath.asPath, "-R" ,"build/libs/kinesis-sandbox.jar"
+		commandLine "jdeps", "-cp", sourceSets.main.runtimeClasspath.asPath, "-R" ,"build/libs/kinesis-sandbox.jar"
 }
 
 task depsSummary(type: Exec, dependsOn: jar){
-    commandLine "jdeps", "-dotoutput", "build/reports/deps", "-s", "-cp", sourceSets.main.runtimeClasspath.asPath, "-R" ,"build/libs/kinesis-sandbox.jar"
+		commandLine "jdeps", "-dotoutput", "build/reports/deps", "-s", "-cp", sourceSets.main.runtimeClasspath.asPath, "-R" ,"build/libs/kinesis-sandbox.jar"
 }
